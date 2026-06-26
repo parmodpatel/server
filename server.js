@@ -6,31 +6,16 @@ const connectDB = require("./config/db");
 
 const leadRoutes = require("./routes/lead.routes");
 const trackingRoutes = require("./routes/tracking.routes");
+const { getDashboard } = require("./controllers/lead.controller");
 
 const app = express();
 
 connectDB();
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      process.env.CLIENT_URL || "http://localhost:3000",
-      "http://localhost:3000",
-    ];
-
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`CORS blocked origin: ${origin}`));
-    }
-  },
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 
+app.get("/api/dashboard", getDashboard);
 app.use("/api/leads", leadRoutes);
 app.use("/track", trackingRoutes);
 
